@@ -1,0 +1,24 @@
+button{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#4c8bf5;
+    color:white;
+    font-size:17px;
+    transition:.2s;
+}
+
+button:hover{
+    background:#3a72d8;
+}
+
+#resetBtn{
+    background:#c0392b;
+}
+
+#resetBtn:hover{
+    background:#a62d22;
+}
