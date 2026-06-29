@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Calculatrice Gloria Victis</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f1115;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:420px;
+    background:#1a1d24;
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 0 30px rgba(0,0,0,.4);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:28px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+label{
+    font-size:18px;
+}
+
+input{
+    width:180px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#2a2f38;
+    color:white;
+    font-size:18px;
+    text-align:right;
+}
+
+input:focus{
+    outline:2px solid #4c8bf5;
+}
+
+.result{
+    margin-top:30px;
+    padding:20px;
+    border-radius:12px;
+    background:#111318;
+}
+
+.result h2{
+    margin-bottom:15px;
+}
+
+.result p{
+    font-size:20px;
+    margin:8px 0;
+}
+
+.total{
+    margin-top:20px;
+    color:#8bb4ff;
+    font-weight:bold;
+    font-size:18px;
+    text-align:center;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Calculatrice Gloria Victis</h1>
+
+<div class="row">
+<label>Or</label>
+<input id="gold" type="number" min="0" value="0">
+</div>
+
+<div class="row">
+<label>Argent</label>
+<input id="silver" type="number" min="0" value="0">
+</div>
+
+<div class="row">
+<label>Fer</label>
+<input id="iron" type="number" min="0" value="0">
+</div>
+
+<div class="row">
+<label>Cuivre</label>
+<input id="copper" type="number" min="0" value="0">
+</div>
+
+<div class="result">
+
+<h2>Total converti</h2>
+
+<p><strong id="rGold">0</strong> Or</p>
+<p><strong id="rSilver">0</strong> Argent</p>
+<p><strong id="rIron">0</strong> Fer</p>
+<p><strong id="rCopper">0</strong> Cuivre</p>
+
+<div class="total">
+Total en cuivre :
+<span id="totalCopper">0</span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const values = {
+    gold:1000000,
+    silver:10000,
+    iron:100,
+    copper:1
+};
+
+const inputs=document.querySelectorAll("input");
+
+inputs.forEach(input=>{
+    input.addEventListener("input",calculate);
+});
+
+calculate();
+
+function calculate(){
+
+let gold=parseInt(document.getElementById("gold").value)||0;
+let silver=parseInt(document.getElementById("silver").value)||0;
+let iron=parseInt(document.getElementById("iron").value)||0;
+let copper=parseInt(document.getElementById("copper").value)||0;
+
+let total=
+gold*values.gold+
+silver*values.silver+
+iron*values.iron+
+copper;
+
+document.getElementById("totalCopper").innerText=total.toLocaleString("fr-FR");
+
+let rGold=Math.floor(total/values.gold);
+total%=values.gold;
+
+let rSilver=Math.floor(total/values.silver);
+total%=values.silver;
+
+let rIron=Math.floor(total/values.iron);
+total%=values.iron;
+
+let rCopper=total;
+
+document.getElementById("rGold").innerText=rGold;
+document.getElementById("rSilver").innerText=rSilver;
+document.getElementById("rIron").innerText=rIron;
+document.getElementById("rCopper").innerText=rCopper;
+
+}
+
+</script>
+
+</body>
+</html>
