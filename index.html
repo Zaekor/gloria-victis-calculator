@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,34 +8,36 @@
 <title>Calculatrice Gloria Victis</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Segoe UI,Arial,sans-serif;
 }
 
 body{
-    background:#0f1115;
+    background:#111827;
     color:#fff;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
+    padding:25px;
 }
 
 .container{
-    width:420px;
-    background:#1a1d24;
-    border-radius:16px;
+    width:100%;
+    max-width:500px;
+    background:#1f2937;
+    border-radius:15px;
     padding:30px;
-    box-shadow:0 0 30px rgba(0,0,0,.4);
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
 }
 
-h1{
+h1,h2{
     text-align:center;
-    margin-bottom:25px;
-    font-size:28px;
+    margin-bottom:20px;
 }
 
 .row{
@@ -53,42 +56,72 @@ input{
     padding:10px;
     border:none;
     border-radius:8px;
-    background:#2a2f38;
+    background:#374151;
     color:white;
     font-size:18px;
     text-align:right;
 }
 
 input:focus{
-    outline:2px solid #4c8bf5;
+    outline:2px solid #3b82f6;
 }
 
-.result{
-    margin-top:30px;
+.card{
+    background:#111827;
+    border-radius:10px;
     padding:20px;
-    border-radius:12px;
-    background:#111318;
+    margin-top:25px;
 }
 
-.result h2{
-    margin-bottom:15px;
-}
-
-.result p{
-    font-size:20px;
+.card p{
     margin:8px 0;
+    font-size:19px;
 }
 
-.total{
-    margin-top:20px;
-    color:#8bb4ff;
-    font-weight:bold;
-    font-size:18px;
+.totalCopper{
+    margin-top:15px;
     text-align:center;
+    color:#60a5fa;
+    font-weight:bold;
 }
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+    font-size:16px;
+    margin-top:12px;
+    transition:.2s;
+}
+
+#saveBtn{
+    background:#2563eb;
+}
+
+#saveBtn:hover{
+    background:#1d4ed8;
+}
+
+#resetBtn{
+    background:#dc2626;
+}
+
+#resetBtn:hover{
+    background:#b91c1c;
+}
+
+hr{
+    border:1px solid #374151;
+    margin:25px 0;
+}
+
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -115,32 +148,56 @@ input:focus{
 <input id="copper" type="number" min="0" value="0">
 </div>
 
-<div class="result">
+<div class="card">
 
-<h2>Total converti</h2>
+<h2>Conversion</h2>
 
 <p><strong id="rGold">0</strong> Or</p>
 <p><strong id="rSilver">0</strong> Argent</p>
 <p><strong id="rIron">0</strong> Fer</p>
 <p><strong id="rCopper">0</strong> Cuivre</p>
 
-<div class="total">
-Total en cuivre :
+<div class="totalCopper">
+Total cuivre :
 <span id="totalCopper">0</span>
 </div>
 
 </div>
 
+<button id="saveBtn">➕ Ajouter au total</button>
+
+<hr>
+
+<div class="card">
+
+<h2>Total sauvegardé</h2>
+
+<p><strong id="sGold">0</strong> Or</p>
+<p><strong id="sSilver">0</strong> Argent</p>
+<p><strong id="sIron">0</strong> Fer</p>
+<p><strong id="sCopper">0</strong> Cuivre</p>
+
+<div class="totalCopper">
+Total cuivre :
+<span id="savedCopper">0</span>
+</div>
+
+</div>
+
+<button id="resetBtn">🗑 Réinitialiser le total</button>
+
 </div>
 
 <script>
 
-const values = {
+const values={
     gold:1000000,
     silver:10000,
     iron:100,
     copper:1
 };
+
+let savedTotal=parseInt(localStorage.getItem("gv_total"))||0;
 
 const inputs=document.querySelectorAll("input");
 
@@ -149,37 +206,78 @@ inputs.forEach(input=>{
 });
 
 calculate();
+updateSaved();
+
+function getCurrentTotal(){
+
+    return (
+        (parseInt(gold.value)||0)*values.gold+
+        (parseInt(silver.value)||0)*values.silver+
+        (parseInt(iron.value)||0)*values.iron+
+        (parseInt(copper.value)||0)
+    );
+
+}
 
 function calculate(){
 
-let gold=parseInt(document.getElementById("gold").value)||0;
-let silver=parseInt(document.getElementById("silver").value)||0;
-let iron=parseInt(document.getElementById("iron").value)||0;
-let copper=parseInt(document.getElementById("copper").value)||0;
+    let total=getCurrentTotal();
 
-let total=
-gold*values.gold+
-silver*values.silver+
-iron*values.iron+
-copper;
+    totalCopper.innerText=total.toLocaleString("fr-FR");
 
-document.getElementById("totalCopper").innerText=total.toLocaleString("fr-FR");
+    display(total,"r");
 
-let rGold=Math.floor(total/values.gold);
-total%=values.gold;
+}
 
-let rSilver=Math.floor(total/values.silver);
-total%=values.silver;
+function display(total,prefix){
 
-let rIron=Math.floor(total/values.iron);
-total%=values.iron;
+    let g=Math.floor(total/values.gold);
+    total%=values.gold;
 
-let rCopper=total;
+    let s=Math.floor(total/values.silver);
+    total%=values.silver;
 
-document.getElementById("rGold").innerText=rGold;
-document.getElementById("rSilver").innerText=rSilver;
-document.getElementById("rIron").innerText=rIron;
-document.getElementById("rCopper").innerText=rCopper;
+    let i=Math.floor(total/values.iron);
+    total%=values.iron;
+
+    let c=total;
+
+    document.getElementById(prefix+"Gold").innerText=g;
+    document.getElementById(prefix+"Silver").innerText=s;
+    document.getElementById(prefix+"Iron").innerText=i;
+    document.getElementById(prefix+"Copper").innerText=c;
+
+}
+
+saveBtn.onclick=()=>{
+
+    savedTotal+=getCurrentTotal();
+
+    localStorage.setItem("gv_total",savedTotal);
+
+    updateSaved();
+
+};
+
+resetBtn.onclick=()=>{
+
+    if(confirm("Réinitialiser le total sauvegardé ?")){
+
+        savedTotal=0;
+
+        localStorage.setItem("gv_total",0);
+
+        updateSaved();
+
+    }
+
+};
+
+function updateSaved(){
+
+    savedCopper.innerText=savedTotal.toLocaleString("fr-FR");
+
+    display(savedTotal,"s");
 
 }
 
@@ -187,3 +285,82 @@ document.getElementById("rCopper").innerText=rCopper;
 
 </body>
 </html>
+
+button{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#4c8bf5;
+    color:white;
+    font-size:17px;
+    transition:.2s;
+}
+
+button:hover{
+    background:#3a72d8;
+}
+
+#resetBtn{
+    background:#c0392b;
+}
+
+#resetBtn:hover{
+    background:#a62d22;
+}
+
+let savedTotal = 0;
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+
+    let gold=parseInt(document.getElementById("gold").value)||0;
+    let silver=parseInt(document.getElementById("silver").value)||0;
+    let iron=parseInt(document.getElementById("iron").value)||0;
+    let copper=parseInt(document.getElementById("copper").value)||0;
+
+    let current =
+        gold*values.gold+
+        silver*values.silver+
+        iron*values.iron+
+        copper;
+
+    savedTotal += current;
+
+    updateSaved();
+
+});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+
+    if(confirm("Réinitialiser le total sauvegardé ?")){
+        savedTotal=0;
+        updateSaved();
+    }
+
+});
+
+function updateSaved(){
+
+    let total=savedTotal;
+
+    document.getElementById("savedCopper").innerText=total.toLocaleString("fr-FR");
+
+    let gold=Math.floor(total/values.gold);
+    total%=values.gold;
+
+    let silver=Math.floor(total/values.silver);
+    total%=values.silver;
+
+    let iron=Math.floor(total/values.iron);
+    total%=values.iron;
+
+    let copper=total;
+
+    document.getElementById("sGold").innerText=gold;
+    document.getElementById("sSilver").innerText=silver;
+    document.getElementById("sIron").innerText=iron;
+    document.getElementById("sCopper").innerText=copper;
+
+}
